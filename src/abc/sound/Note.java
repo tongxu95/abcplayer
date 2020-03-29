@@ -29,8 +29,8 @@ public class Note implements Music {
 		int semitones = 0;
 		String baseNote = "";
 		for (String spec : specs) {
-			if (spec.matches("^|_")) {
-				semitones += spec.matches("^") ? 1 : -1;
+			if (spec.matches("\\^|_")) {
+				semitones += spec.matches("\\^") ? 1 : -1;
 			} else if (spec.matches("[a-gA-G]")) {
 				baseNote = spec.toUpperCase();
 				if (spec.matches("[a-g]")) {
@@ -91,7 +91,7 @@ public class Note implements Music {
      */
 	@Override
 	public String toString() {
-		return pitch.toString() + "1/" + Integer.toString(duration);
+		return pitch.toString() + Integer.toString(duration);
 	}
 	
 }

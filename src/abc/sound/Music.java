@@ -45,7 +45,7 @@ public interface Music {
      *
      * @param player a MIDI sequence player to play the piece
      * @param startTick the starting tick; must be >= 0
-     * @return number of ticks after music is played, or -1 if music piece is finished.
+     * @return number of ticks after music is played.
      */
 	public int play (SequencePlayer player, int startTick);
 

@@ -29,9 +29,9 @@ public class Band implements Music {
 	}
 	
 	public int play (SequencePlayer player, int startTick) {
-		voice1.play(player, startTick);
-		voice2.play(player, startTick);
-		return -1;
+		int ticks1 = voice1.play(player, startTick);
+		int ticks2 = voice2.play(player, startTick);
+		return Integer.max(ticks1, ticks2);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class Band implements Music {
      */
 	@Override
 	public String toString() {
-		return voice1.toString() + " " + voice2.toString();
+		return "[|" + voice1.toString() + "|]\n[|" + voice2.toString() + "|]";
 	}
 	
 }
