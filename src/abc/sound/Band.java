@@ -1,7 +1,20 @@
 package abc.sound;
 
+/**
+ * 
+ * An immutable data type representing music with multiple voices. 
+ * 
+ */
 public class Band implements Music {
 	private final Music voice1, voice2;
+	
+	// Abstraction function:
+    //   represent two musical tones being played being simultaneously 
+    // Representation invariant:
+	//	 music1, music2 != null
+    // Safety from rep exposure:
+    //   All fields are private and final
+	//	 All fields are immutable 
 	
 	public Band (Music voice1, Music voice2) {
 		this.voice1 = voice1;
@@ -51,8 +64,7 @@ public class Band implements Music {
 	}
 	
     /**
-     * @return a string representation of this note in abc music notation, consisting of 
-     * 	       the pitch and the note duration in ticks. 
+     * @return the string representation in abc music notation. 
      */
 	@Override
 	public String toString() {

@@ -69,8 +69,7 @@ public class Melody implements Music {
 	}
 	
     /**
-     * @return a string representation of this note in abc music notation, consisting of 
-     * 	       the pitch and the note duration in ticks. 
+     * @return the string representation in abc music notation. 
      */
 	@Override
 	public String toString() {

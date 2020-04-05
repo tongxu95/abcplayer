@@ -10,7 +10,7 @@ public class Note implements Music {
 	private final int duration;
 	
 	// Abstraction function:
-    //   represent a musical note  
+    //   represent a musical note with the given pitch and duration in numbers of tick
     // Representation invariant:
 	//	 pitch != null;
 	//	 duration > 0;

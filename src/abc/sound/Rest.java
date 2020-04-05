@@ -10,7 +10,7 @@ public class Rest implements Music {
 	private final int duration;
 	
 	// Abstraction function:
-    //   represent a rest in music 
+    //   represent a rest in music with duration in number of ticks
     // Representation invariant:
 	//	 duration > 0;
     // Safety from rep exposure:

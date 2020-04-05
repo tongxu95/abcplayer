@@ -1,5 +1,7 @@
 package abc.sound;
 
+import org.antlr.v4.runtime.*;
+
 /**
  * 
  * An immutable data type representing a musical piece.
@@ -21,22 +23,12 @@ public interface Music {
 	//			Band (voice 1: Music, voices: Music)
 	
     /**
-     * Parse the music header.
-     * @param input expression to parse.
-     * @return header AST for the input
-     * @throws IllegalArgumentException if the expression is invalid
-     */
-	public static Music parseHeader(String input) throws IllegalArgumentException {
-		throw new RuntimeException("not implemented");
-	}
-	
-    /**
      * Parse the body section of the file.
-     * @param input expression to parse.
+     * @param input string to parse.
      * @return music AST for the input
      * @throws IllegalArgumentException if the expression is invalid
      */
-	public static Music parseBody(String input) throws IllegalArgumentException {
+	public static Music parseMusic(String input) throws IllegalArgumentException {
 		throw new RuntimeException("not implemented");
 	}
 	

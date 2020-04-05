@@ -1,5 +1,9 @@
 package abc.sound;
 
+import abc.parser.*;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +20,7 @@ public class Header {
 	private final double meter;
 	private final int tempo;
 	private final String key;
+	private final List <String> voices;
 	
 	// Abstraction function:
     //   represent the tune header  
@@ -25,7 +30,8 @@ public class Header {
 	//	 defaultDuration, meter, tempo > 0;
     // Safety from rep exposure:
     //   All fields are private and final
-	//	 All fields are immutable types
+	//	 All fields except voices are immutable types; voices is a mutable list, so Header()
+	//	 constructor and getVoices() make defensive copies of the List
 	
     /**
      * Create tune header
@@ -35,15 +41,17 @@ public class Header {
      * @meter meter sum of the durations of all notes within a bar 
      * @param tempo  number of beats of the given length to play per minute
      * @param key key signature of the piece
+     * @param voices voices that are played simultaneously in the piece 
      */
 	public Header(String title, String author, double noteValue, double meter, int tempo, 
-			String key) {
+			String key, List<String> voices) {
 		this.title = title;
 		this.author = author;
 		this.defaultDuration = (int) noteValue * Music.TICKS_WHOLE_NOTE;
 		this.meter = meter;
 		this.tempo = tempo;
 		this.key = key;
+		this.voices = new ArrayList<>(voices);
 		checkRep();
 	}
 	
@@ -57,6 +65,34 @@ public class Header {
 		assert meter > 0;
 		assert tempo > 0;
 		assert keySignatures.contains(key);
+		assert voices != null;
+	}
+	
+	
+    /**
+     * Parse the music header.
+     * @param input string to parse.
+     * @return header AST for the input
+     * @throws IllegalArgumentException if the expression is invalid
+     */
+	public static Header parseHeader(String input) throws IllegalArgumentException {
+		try {
+			CharStream stream = new ANTLRInputStream (input);
+			ABCHeaderLexer lexer = new ABCHeaderLexer(stream);
+			lexer.reportErrorsAsExceptions();
+		
+			TokenStream tokens = new CommonTokenStream(lexer);
+			ABCHeaderParser parser = new ABCHeaderParser(tokens);
+			parser.reportErrorsAsExceptions();
+		
+			ParseTree tree = parser.root();
+			ParseTreeWalker walker = new ParseTreeWalker();
+			MakeHeader walkHeader = new MakeHeader();
+			walker.walk(walkHeader, tree);
+			return walkHeader.getHeader();
+		} catch (Exception e) {
+			throw new IllegalArgumentException("ParseError: illegal file format");
+		}
 	}
 	
     /**
@@ -103,4 +139,11 @@ public class Header {
 		return defaultDuration;
 	}
 	
+    /**
+     * @return voices in this piece    
+     * */
+	public List<String> getVoices() {
+		return new ArrayList<>(voices);
+	}
+
 }
