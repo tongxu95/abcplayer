@@ -1,5 +1,8 @@
 package abc.sound;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -7,71 +10,145 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import abc.parser.ABCHeaderListener;
 import abc.parser.ABCHeaderParser;
 
-public class MakeHeader implements ABCHeaderListener{
+/**
+ * 
+ * Make Header from ABCHeader parse tree. 
+ *
+ */
+public class MakeHeader implements ABCHeaderListener {
+	private String title, composer, meter, key;
+	private double duration, meter_reduced, tempo_beat;
+	private int index, tempo_bpm;
+	private List <String> voices = new ArrayList<>();
 	
-	public Header getHeader() {
-		throw new RuntimeException("not implemented");
+	// Abstraction function:
+    //   represent fields in ABC music header  
+    // Representation invariant:
+	//	 title, key, composer, meter, voices != null;
+	//	 duration, meter_reduced, tempo_beat, index, tempo_bpm > 0;
+
+	public MakeHeader() {
+		title = composer = meter = key = "";
+		duration = meter_reduced = tempo_beat = 0.0;
+		index = tempo_bpm = 0;
 	}
 	
-	@Override public void exitRoot(ABCHeaderParser.RootContext ctx) {
-		throw new RuntimeException("not implemented");
+    /**
+     * Returns Header constructed by this listener object.  
+     * Require that the first, second, and last fields in the header
+     * are index, title and key respectively. 
+     * @return Header for the parse tree that was walked
+     */
+	public Header getHeader() throws IllegalArgumentException {
+		if (composer.isEmpty()) {
+			composer = Music.DEFAULT_AUTHOR;
+		}
+		if (meter.isEmpty()) {
+			meter = "4/4";
+			meter_reduced = Music.DEFAULT_METER;
+		}
+		if (duration == 0.0) {
+			if (meter_reduced < 0.75) {
+				duration = 1.0 / 16.0;
+			} else if (meter_reduced >= 0.75) {
+				duration = 1.0 / 8.0;
+			} 
+		}
+		if (tempo_beat == 0.0) {
+			tempo_bpm = Music.DEFAULT_TEMPO;
+			tempo_beat = duration;
+		}
+		checkRep();
+		return new Header(index, title, composer, duration, meter, tempo_beat, 
+				tempo_bpm, key, voices);
 	}
 	
-	@Override public void exitHeader(ABCHeaderParser.HeaderContext ctx) {
-		throw new RuntimeException("not implemented");
+	private void checkRep() {
+		assert (title != null && key != null && composer != null && voices != null);
+		assert (index > 0 && duration > 0 && meter_reduced > 0 && tempo_beat > 0 && 
+				tempo_bpm > 0);
+		
 	}
+	
+	@Override public void exitRoot(ABCHeaderParser.RootContext ctx) { }
+	
+	@Override public void exitHeader(ABCHeaderParser.HeaderContext ctx) { }
 	
 	@Override public void exitIndex(ABCHeaderParser.IndexContext ctx) {
-		throw new RuntimeException("not implemented");
+		// mandatory field (first in header)
+		String spec = ctx.TEXT().getText().trim();
+		assert spec.matches("[0-9]+");
+		index = Integer.parseInt(spec);
 	}
 	
 	@Override public void exitTitle(ABCHeaderParser.TitleContext ctx) {
-		throw new RuntimeException("not implemented");
+		// mandatory field (second field in header)
+		title = ctx.TEXT().getText();
 	}
 	
-	@Override public void exitOptional(ABCHeaderParser.OptionalContext ctx) {
-		throw new RuntimeException("not implemented");
-	}
+	@Override public void exitOptional(ABCHeaderParser.OptionalContext ctx) { }
 	
 	@Override public void exitComposer(ABCHeaderParser.ComposerContext ctx) {
-		throw new RuntimeException("not implemented");
+		// optional field
+		if (ctx != null) {
+			composer = ctx.TEXT().getText();
+		} 
 	}
 	
 	@Override public void exitDuration(ABCHeaderParser.DurationContext ctx) {
-		throw new RuntimeException("not implemented");
+		// optional field
+		if (ctx != null) {
+			String spec = ctx.TEXT().getText().trim();
+			assert spec.matches("[0-9]+/[0-9]+");
+			String[] value = spec.split("/");
+			duration = Double.parseDouble(value[0]) / Double.parseDouble(value[1]);
+		} 
 	}
 	
 	@Override public void exitMeter(ABCHeaderParser.MeterContext ctx) {
-		throw new RuntimeException("not implemented");
+		// optional field
+		if (ctx != null) {
+			String spec = ctx.TEXT().getText().trim();
+			if (spec.equals("C")) {
+				meter = "4/4";
+				meter_reduced = 4.0 / 4.0;
+			} else if (spec.equals("C|")) {
+				meter = "2/2";
+				meter_reduced = 2.0 / 2.0;
+			} else if (spec.matches("[0-9]+/[0-9]+")) {
+				String[] value = spec.split("/");
+				meter_reduced = Double.parseDouble(value[0]) / Double.parseDouble(value[1]);
+			} else {
+				throw new IllegalArgumentException("ParseError: illegal file format");
+			}
+		} 
 	}
 	
 	@Override public void exitTempo(ABCHeaderParser.TempoContext ctx) {
-		throw new RuntimeException("not implemented");
+		// optional field
+		if (ctx != null) {
+			String spec = ctx.TEXT().getText().trim();
+			assert spec.matches("[0-9]+/[0-9]+=[0-9]+");
+			String[] tempo = spec.split("[/=]");
+			tempo_beat = Double.parseDouble(tempo[0]) / Double.parseDouble(tempo[1]);
+			tempo_bpm = Integer.parseInt(tempo[2]);
+		} 
 	}
 	
 	@Override public void exitVoice(ABCHeaderParser.VoiceContext ctx) {
-		throw new RuntimeException("not implemented");
+		// optional field
+		if (ctx != null) voices.add(ctx.TEXT().getText().trim());
 	}
 	
 	@Override public void exitKey(ABCHeaderParser.KeyContext ctx) {
-		throw new RuntimeException("not implemented");
+		// mandatory field (last field in header) 
+		key = ctx.TEXT().getText().trim();
+		assert key.matches("[A-G][b#]?m?");
 	}
 	
-	@Override public void exitFraction(ABCHeaderParser.FractionContext ctx) {
-		throw new RuntimeException("not implemented");
-	}
+	@Override public void exitComment(ABCHeaderParser.CommentContext ctx) {	}
 	
-	@Override public void exitPulse(ABCHeaderParser.PulseContext ctx) {
-		throw new RuntimeException("not implemented");
-	}
-	
-	@Override public void exitComment(ABCHeaderParser.CommentContext ctx) {
-		throw new RuntimeException("not implemented");
-	}
-	
-	@Override public void exitEol(ABCHeaderParser.EolContext ctx) {
-		throw new RuntimeException("not implemented");
-	}
+	@Override public void exitEol(ABCHeaderParser.EolContext ctx) {	}
 	
 	
 	@Override public void enterRoot(ABCHeaderParser.RootContext ctx) { }
@@ -85,8 +162,6 @@ public class MakeHeader implements ABCHeaderListener{
 	@Override public void enterTempo(ABCHeaderParser.TempoContext ctx) { }
 	@Override public void enterVoice(ABCHeaderParser.VoiceContext ctx) { }
 	@Override public void enterKey(ABCHeaderParser.KeyContext ctx) { }
-	@Override public void enterFraction(ABCHeaderParser.FractionContext ctx) { }
-	@Override public void enterPulse(ABCHeaderParser.PulseContext ctx) { }
 	@Override public void enterComment(ABCHeaderParser.CommentContext ctx) { }
 	@Override public void enterEol(ABCHeaderParser.EolContext ctx) { }
 	

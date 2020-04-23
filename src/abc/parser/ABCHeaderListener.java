@@ -121,26 +121,6 @@ public interface ABCHeaderListener extends ParseTreeListener {
    */
   void exitKey(ABCHeaderParser.KeyContext ctx);
   /**
-   * Enter a parse tree produced by {@link ABCHeaderParser#fraction}.
-   * @param ctx the parse tree
-   */
-  void enterFraction(ABCHeaderParser.FractionContext ctx);
-  /**
-   * Exit a parse tree produced by {@link ABCHeaderParser#fraction}.
-   * @param ctx the parse tree
-   */
-  void exitFraction(ABCHeaderParser.FractionContext ctx);
-  /**
-   * Enter a parse tree produced by {@link ABCHeaderParser#pulse}.
-   * @param ctx the parse tree
-   */
-  void enterPulse(ABCHeaderParser.PulseContext ctx);
-  /**
-   * Exit a parse tree produced by {@link ABCHeaderParser#pulse}.
-   * @param ctx the parse tree
-   */
-  void exitPulse(ABCHeaderParser.PulseContext ctx);
-  /**
    * Enter a parse tree produced by {@link ABCHeaderParser#comment}.
    * @param ctx the parse tree
    */

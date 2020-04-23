@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.tree.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -14,42 +17,44 @@ import java.util.Arrays;
  * 
  */
 public class Header {
-	private final String title;
-	private final String author;
-	private final int defaultDuration;
-	private final double meter;
-	private final int tempo;
-	private final String key;
-	private final List <String> voices;
+	private final String title, author, meter, key;
+	private final int index, defaultDuration, tempo_bpm, tempo_beat;
+	private List <String> voices;
 	
 	// Abstraction function:
     //   represent the tune header  
     // Representation invariant:
 	//	 title, author are nonempty strings;
 	//   key is a valid key signature
-	//	 defaultDuration, meter, tempo > 0;
+	//	 index, defaultDuration, meter, tempo_beat, tempo_bpm > 0;
+	//	 voices != null
     // Safety from rep exposure:
-    //   All fields are private and final
+    //   All fields are private and final except voices (voice may be labeled in body but 
+	//	 not in header
 	//	 All fields except voices are immutable types; voices is a mutable list, so Header()
-	//	 constructor and getVoices() make defensive copies of the List
+	//	 constructor, getVoices() and addVoices() make defensive copies of the List
 	
     /**
      * Create tune header
+     * @param index a number similar to the tracking number in a recording
      * @param title title of piece
      * @param author name of composer 
      * @param noteValue length or duration of a note
-     * @meter meter sum of the durations of all notes within a bar 
-     * @param tempo  number of beats of the given length to play per minute
+     * @param meter sum of the durations of all notes within a bar 
+     * @param tempo_beat beat length, may be different from noteValue
+     * @param tempo_bpm number of beats per minute
      * @param key key signature of the piece
      * @param voices voices that are played simultaneously in the piece 
      */
-	public Header(String title, String author, double noteValue, double meter, int tempo, 
-			String key, List<String> voices) {
+	public Header(int index, String title, String author, double noteValue, String meter, 
+			double tempo_beat, int tempo_bpm, String key, List<String> voices) {
+		this.index = index;
 		this.title = title;
 		this.author = author;
-		this.defaultDuration = (int) noteValue * Music.TICKS_WHOLE_NOTE;
+		this.defaultDuration = (int) (noteValue * Music.TICKS_WHOLE_NOTE);
 		this.meter = meter;
-		this.tempo = tempo;
+		this.tempo_beat = (int) (tempo_beat * Music.TICKS_WHOLE_NOTE);
+		this.tempo_bpm = tempo_bpm;
 		this.key = key;
 		this.voices = new ArrayList<>(voices);
 		checkRep();
@@ -57,13 +62,15 @@ public class Header {
 	
 	private void checkRep() {
 		final List <String> keySignatures = Arrays.asList("C", "Am", "G", "Em", "D", "Bm", 
-				"A", "F#m", "E", "C#m", "B", "G#m", "F#", "D#m", "C#", "A#m", "F", "Dm", "Bb", 
-				"Gm", "Eb", "Cm", "Ab", "Fm", "Db", "Bbm", "Gb", "Ebm", "Cb", "Abm");
+				"A", "F#m", "E", "C#m", "B", "G#m", "F#", "D#m", "C#", "A#m", "F", "Dm",  
+				"Bb", "Gm", "Eb", "Cm", "Ab", "Fm", "Db", "Bbm", "Gb", "Ebm", "Cb", "Abm");
 		assert ! title.isEmpty();
 		assert ! author.isEmpty();
+		assert ! meter.isEmpty();
+		assert index > 0;
 		assert defaultDuration > 0;
-		assert meter > 0;
-		assert tempo > 0;
+		assert tempo_beat > 0;
+		assert tempo_bpm > 0;
 		assert keySignatures.contains(key);
 		assert voices != null;
 	}
@@ -80,11 +87,11 @@ public class Header {
 			CharStream stream = new ANTLRInputStream (input);
 			ABCHeaderLexer lexer = new ABCHeaderLexer(stream);
 			lexer.reportErrorsAsExceptions();
-		
+
 			TokenStream tokens = new CommonTokenStream(lexer);
 			ABCHeaderParser parser = new ABCHeaderParser(tokens);
 			parser.reportErrorsAsExceptions();
-		
+
 			ParseTree tree = parser.root();
 			ParseTreeWalker walker = new ParseTreeWalker();
 			MakeHeader walkHeader = new MakeHeader();
@@ -98,38 +105,80 @@ public class Header {
     /**
      * @return the collection of accidentals, as specified by the key signature in the header    
      * */
-	public List<String> getAccidentals() {
-		List<String> accidentals = new ArrayList<>();
+	public Map<String, Integer> getKeySig () {
+		Map<String, Integer> keySig = new HashMap<>();
 		if (key == "G" || key == "Em" ) {
-			accidentals.add("^F");
+			keySig.put("F", 1);
 		} else if (key == "D" || key == "Bm") {
-			accidentals.addAll(Arrays.asList("^F", "^C"));
+			keySig.put("F", 1);
+			keySig.put("C", 1);
 		} else if (key == "A" || key == "F#m") {
-			accidentals.addAll(Arrays.asList("^F", "^C", "^G"));
+			keySig.put("F", 1);
+			keySig.put("C", 1);
+			keySig.put("G", 1);
 		} else if (key == "E" || key == "C#m") {
-			accidentals.addAll(Arrays.asList("^F", "^C", "^G", "^D"));
+			keySig.put("F", 1);
+			keySig.put("C", 1);
+			keySig.put("G", 1);
+			keySig.put("D", 1);
 		}  else if (key == "B" || key == "G#m") {
-			accidentals.addAll(Arrays.asList("^F", "^C", "^G", "^D", "^A"));
+			keySig.put("F", 1);
+			keySig.put("C", 1);
+			keySig.put("G", 1);
+			keySig.put("D", 1);
+			keySig.put("A", 1);
 		}  else if (key == "F#" || key == "D#m") {
-			accidentals.addAll(Arrays.asList("^F", "^C", "^G", "^D", "^A", "E"));
+			keySig.put("F", 1);
+			keySig.put("C", 1);
+			keySig.put("G", 1);
+			keySig.put("D", 1);
+			keySig.put("A", 1);
+			keySig.put("E", 1);
 		}  else if (key == "C#" || key == "A#m") {
-			accidentals.addAll(Arrays.asList("^F", "^C", "^G", "^D", "^A", "E", "B"));
+			keySig.put("F", 1);
+			keySig.put("C", 1);
+			keySig.put("G", 1);
+			keySig.put("D", 1);
+			keySig.put("A", 1);
+			keySig.put("E", 1);
+			keySig.put("B", 1);
 		}  else if (key == "F" || key == "Dm") {
-			accidentals.addAll(Arrays.asList("_B"));
+			keySig.put("B", -1);
 		}  else if (key == "Bb" || key == "Gm") {
-			accidentals.addAll(Arrays.asList("_B", "_E"));
+			keySig.put("B", -1);
+			keySig.put("E", -1);
 		}  else if (key == "Eb" || key == "Cm") {
-			accidentals.addAll(Arrays.asList("_B", "_E", "_A"));
+			keySig.put("B", -1);
+			keySig.put("E", -1);
+			keySig.put("A", -1);
 		}  else if (key == "Ab" || key == "Fm") {
-			accidentals.addAll(Arrays.asList("_B", "_E", "_A", "_D"));
+			keySig.put("B", -1);
+			keySig.put("E", -1);
+			keySig.put("A", -1);
+			keySig.put("D", -1);
 		}  else if (key == "Db" || key == "Bbm") {
-			accidentals.addAll(Arrays.asList("_B", "_E", "_A", "_D", "_G"));
+			keySig.put("B", -1);
+			keySig.put("E", -1);
+			keySig.put("A", -1);
+			keySig.put("D", -1);
+			keySig.put("G", -1);
 		}  else if (key == "Gb" || key == "Ebm") {
-			accidentals.addAll(Arrays.asList("_B", "_E", "_A", "_D", "_G", "_C"));
+			keySig.put("B", -1);
+			keySig.put("E", -1);
+			keySig.put("A", -1);
+			keySig.put("D", -1);
+			keySig.put("G", -1);
+			keySig.put("C", -1);
 		}  else if (key == "Cb" || key == "Abm") {
-			accidentals.addAll(Arrays.asList("_B", "_E", "_A", "_D", "_G", "_C", "_F"));
+			keySig.put("B", -1);
+			keySig.put("E", -1);
+			keySig.put("A", -1);
+			keySig.put("D", -1);
+			keySig.put("G", -1);
+			keySig.put("C", -1);
+			keySig.put("F", -1);
 		}
-		return accidentals;
+		return keySig;
 	}
 	
     /**
@@ -144,6 +193,45 @@ public class Header {
      * */
 	public List<String> getVoices() {
 		return new ArrayList<>(voices);
+	}
+	
+    /**
+     * Add voice label to header if voice field was not specified in the header
+     * @param voiceLabels List of voice labels 
+     * */
+	public void addVoices(List<String> voiceLabels) {
+		if (voices.isEmpty()) voices = new ArrayList<>(voiceLabels);
+		return;
+	}
+	
+	@Override
+	public boolean equals (Object thatObject) {
+		if (! (thatObject instanceof Header)) return false;
+		Header thatHeader = (Header) thatObject;
+		return this.toString().equals(thatHeader.toString());
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.toString().hashCode();
+	}
+	
+    /**
+     * @return a string representation of this music header, consisting newline separated fields
+     * 		   in the order of Index, Title, Author, Default Note Value, Meter, Tempo, Voices 
+     *		   (separated by comma and space) and Key Signature.
+     * 		  
+     */
+	@Override
+	public String toString() {
+		String header = "Index: " + Integer.toString(index) + "\nTitle: " + title +
+				"\nAuthor: " + author + "\nDefault Note Value: " + 
+				Integer.toString(defaultDuration) + " ticks\nMeter: " + meter +
+				 "\nTempo: " + Integer.toString(tempo_beat) + " ticks per beat, " +
+				Integer.toString(tempo_bpm) + " beats per minute\nVoices: " +
+				voices.stream().collect(Collectors.joining(", ")) + "\nKey Signature: " 
+				+ key + "\n";
+		return header;
 	}
 
 }

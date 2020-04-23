@@ -151,30 +151,6 @@ public class ABCHeaderBaseListener implements ABCHeaderListener {
    *
    * <p>The default implementation does nothing.</p>
    */
-  @Override public void enterFraction(ABCHeaderParser.FractionContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
-  @Override public void exitFraction(ABCHeaderParser.FractionContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
-  @Override public void enterPulse(ABCHeaderParser.PulseContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
-  @Override public void exitPulse(ABCHeaderParser.PulseContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
   @Override public void enterComment(ABCHeaderParser.CommentContext ctx) { }
   /**
    * {@inheritDoc}
