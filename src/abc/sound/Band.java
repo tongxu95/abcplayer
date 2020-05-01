@@ -1,12 +1,16 @@
 package abc.sound;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * 
  * An immutable data type representing music with multiple voices. 
  * 
  */
 public class Band implements Music {
-	private final Music voice1, voice2;
+	
+	private final Map<String, Music> voices;
 	
 	// Abstraction function:
     //   represent two musical tones being played being simultaneously 
@@ -16,59 +20,68 @@ public class Band implements Music {
     //   All fields are private and final
 	//	 All fields are immutable 
 	
-	public Band (Music voice1, Music voice2) {
-		this.voice1 = voice1;
-		this.voice2 = voice2;
+	/**
+	 * @param voices mapping of voice labels to melodies 
+	 */
+	public Band (Map<String, Music> voices) {
+		this.voices = new HashMap<>(voices);
 		checkRep();
 	}
 	
 	private void checkRep() {
-		assert voice1 != null;
-		assert voice2 != null;
+		assert voices != null;
 	}
 	
     /**
-     * @return one voice in this music piece
+     * @return melody for a given voice
      */
-	public Music getVoice1() {
-		return voice1;
+	public Music getVoice(String label) {
+		return voices.get(label);
 	}
 	
-    /**
-     * @return other voice(s) in this music piece
-     */
-	public Music getVoice2() {
-		return voice2;
+	@Override
+	public int getDuration () {
+		 return voices.values().stream().mapToInt(v -> v.getDuration()).max().orElse(0);
 	}
 	
+	@Override
+	public Band modLength(double modifier) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
 	public int play (SequencePlayer player, int startTick) {
-		int ticks1 = voice1.play(player, startTick);
-		int ticks2 = voice2.play(player, startTick);
-		return Integer.max(ticks1, ticks2);
+		return voices.values().stream().mapToInt(v -> v.play(player, startTick)).max().orElse(0);
 	}
 	
 	@Override
 	public boolean equals (Object thatObject) {
 		if (! (thatObject instanceof Band)) return false;
 		Band thatBand = (Band) thatObject;
-		return (voice1.equals(thatBand.getVoice1()) && voice2.equals(thatBand.getVoice2()));
+		for (String voice : voices.keySet()) {
+			if (! (voices.get(voice).equals(thatBand.getVoice(voice)))) return false;
+		}
+		return true;
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + voice1.hashCode();
-		result = prime * result + voice2.hashCode();
+		for (String voice : voices.keySet()) {
+			result = prime * result + voices.get(voice).hashCode();
+		}
 		return result;
 	}
 	
     /**
-     * @return the string representation in abc music notation. 
+     * @return the string representation of music consisting of multiple voices/melodies. 
      */
 	@Override
 	public String toString() {
-		return "[|" + voice1.toString() + "|]\n[|" + voice2.toString() + "|]";
+		String band = "";
+		for (String voice : voices.keySet()) band += "[|" + voices.get(voice).toString() + "|]\n";
+		return band;
 	}
 	
 }

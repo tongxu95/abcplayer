@@ -6,6 +6,7 @@ package abc.sound;
  * 
  */
 public class Melody implements Music {
+	
 	private final Music music1, music2;
 	
 	// Abstraction function:
@@ -47,6 +48,17 @@ public class Melody implements Music {
 		return music2;
 	}
 	
+	@Override
+	public int getDuration () {
+		return music1.getDuration() + music2.getDuration();
+	}
+	
+	@Override
+	public Melody modLength(double modifier) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
 	public int play (SequencePlayer player, int startTick) {
 		int tick = music1.play(player, startTick);
 		return music2.play(player, tick);
@@ -69,11 +81,13 @@ public class Melody implements Music {
 	}
 	
     /**
-     * @return the string representation in abc music notation. 
+     * @return the string representation a musical melody, consisting of notes, rests, chords,
+     * 		   and tuplets. 
      */
 	@Override
 	public String toString() {
-		return music1.toString() + " " + music2.toString();
+		String melody = music1.toString() + " " + music2.toString();
+		return melody.trim();
 	}
 	
 }

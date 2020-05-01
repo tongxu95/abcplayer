@@ -55,6 +55,42 @@ public class ABCMusicBaseListener implements ABCMusicListener {
    *
    * <p>The default implementation does nothing.</p>
    */
+  @Override public void enterMeasure(ABCMusicParser.MeasureContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
+  @Override public void exitMeasure(ABCMusicParser.MeasureContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
+  @Override public void enterBarline(ABCMusicParser.BarlineContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
+  @Override public void exitBarline(ABCMusicParser.BarlineContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
+  @Override public void enterRepeat(ABCMusicParser.RepeatContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
+  @Override public void exitRepeat(ABCMusicParser.RepeatContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
   @Override public void enterElement(ABCMusicParser.ElementContext ctx) { }
   /**
    * {@inheritDoc}
@@ -151,30 +187,6 @@ public class ABCMusicBaseListener implements ABCMusicListener {
    *
    * <p>The default implementation does nothing.</p>
    */
-  @Override public void enterBarline(ABCMusicParser.BarlineContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
-  @Override public void exitBarline(ABCMusicParser.BarlineContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
-  @Override public void enterRepeat(ABCMusicParser.RepeatContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
-  @Override public void exitRepeat(ABCMusicParser.RepeatContext ctx) { }
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The default implementation does nothing.</p>
-   */
   @Override public void enterVoice(ABCMusicParser.VoiceContext ctx) { }
   /**
    * {@inheritDoc}
@@ -206,6 +218,18 @@ public class ABCMusicBaseListener implements ABCMusicListener {
    * <p>The default implementation does nothing.</p>
    */
   @Override public void exitEol(ABCMusicParser.EolContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
+  @Override public void enterText(ABCMusicParser.TextContext ctx) { }
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The default implementation does nothing.</p>
+   */
+  @Override public void exitText(ABCMusicParser.TextContext ctx) { }
 
   /**
    * {@inheritDoc}

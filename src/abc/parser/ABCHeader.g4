@@ -27,7 +27,7 @@ key: 'K:' TEXT eol;
 comment: '%' TEXT NEWLINE;
 eol: NEWLINE | comment;
 
-TEXT: [a-zA-Z0-9/=',;.!?|# \t]+;
+TEXT: [a-zA-Z0-9/=',;.!?|#"&<>^@-_ \t]+;
 NEWLINE: [\n\r] | '\r\n';
 
 

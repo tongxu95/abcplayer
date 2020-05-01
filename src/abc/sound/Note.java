@@ -6,6 +6,7 @@ package abc.sound;
  * 
  */
 public class Note implements Music {
+	
 	private final Pitch pitch;
 	private final int duration;
 	
@@ -20,27 +21,12 @@ public class Note implements Music {
 	
     /**
      * Create a music note
-     * @param note a musical note in abc music notation
+     * @param pitch of a musical note 
      * @param duration note duration (number of ticks)
      */
-	public Note (String note, int duration) {
+	public Note (Pitch pitch, int duration) {
 		this.duration = duration;
-		String[] specs = note.split("");
-		int semitones = 0;
-		String baseNote = "";
-		for (String spec : specs) {
-			if (spec.matches("\\^|_")) {
-				semitones += spec.matches("\\^") ? 1 : -1;
-			} else if (spec.matches("[a-gA-G]")) {
-				baseNote = spec.toUpperCase();
-				if (spec.matches("[a-g]")) {
-					semitones += 12;
-				}
-			} else if (spec.matches(",|'")) {
-				semitones += spec.matches("'") ? 12 : -12;
-			}
-		}
-		pitch = new Pitch(baseNote.charAt(0)).transpose(semitones);
+		this.pitch = pitch;
 		checkRep();
 	}
 	
@@ -56,13 +42,16 @@ public class Note implements Music {
 		return pitch;
 	}
 	
-    /**
-     * @return duration of the note (number of ticks)
-     */
+	@Override
 	public int getDuration() {
 		return duration;
-	}
+	}	
 	
+	@Override
+	public Note modLength(double modifier) {
+		return new Note (pitch, (int) Math.round(duration*modifier));
+	}
+
 	@Override
 	public int play (SequencePlayer player, int startTick) {
 		player.addNote(pitch.toMidiNote(), startTick, duration);
@@ -86,8 +75,8 @@ public class Note implements Music {
 	}
 	
     /**
-     * @return a string representation of this note in abc music notation, consisting of 
-     * 	       the pitch and the note duration in ticks. 
+     * @return a string representation of this note, consisting of the pitch and the
+     * 	        note duration in ticks (a whole note last for 192 ticks). 
      */
 	@Override
 	public String toString() {

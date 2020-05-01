@@ -41,6 +41,36 @@ public interface ABCMusicListener extends ParseTreeListener {
    */
   void exitLine(ABCMusicParser.LineContext ctx);
   /**
+   * Enter a parse tree produced by {@link ABCMusicParser#measure}.
+   * @param ctx the parse tree
+   */
+  void enterMeasure(ABCMusicParser.MeasureContext ctx);
+  /**
+   * Exit a parse tree produced by {@link ABCMusicParser#measure}.
+   * @param ctx the parse tree
+   */
+  void exitMeasure(ABCMusicParser.MeasureContext ctx);
+  /**
+   * Enter a parse tree produced by {@link ABCMusicParser#barline}.
+   * @param ctx the parse tree
+   */
+  void enterBarline(ABCMusicParser.BarlineContext ctx);
+  /**
+   * Exit a parse tree produced by {@link ABCMusicParser#barline}.
+   * @param ctx the parse tree
+   */
+  void exitBarline(ABCMusicParser.BarlineContext ctx);
+  /**
+   * Enter a parse tree produced by {@link ABCMusicParser#repeat}.
+   * @param ctx the parse tree
+   */
+  void enterRepeat(ABCMusicParser.RepeatContext ctx);
+  /**
+   * Exit a parse tree produced by {@link ABCMusicParser#repeat}.
+   * @param ctx the parse tree
+   */
+  void exitRepeat(ABCMusicParser.RepeatContext ctx);
+  /**
    * Enter a parse tree produced by {@link ABCMusicParser#element}.
    * @param ctx the parse tree
    */
@@ -121,26 +151,6 @@ public interface ABCMusicListener extends ParseTreeListener {
    */
   void exitTuplet(ABCMusicParser.TupletContext ctx);
   /**
-   * Enter a parse tree produced by {@link ABCMusicParser#barline}.
-   * @param ctx the parse tree
-   */
-  void enterBarline(ABCMusicParser.BarlineContext ctx);
-  /**
-   * Exit a parse tree produced by {@link ABCMusicParser#barline}.
-   * @param ctx the parse tree
-   */
-  void exitBarline(ABCMusicParser.BarlineContext ctx);
-  /**
-   * Enter a parse tree produced by {@link ABCMusicParser#repeat}.
-   * @param ctx the parse tree
-   */
-  void enterRepeat(ABCMusicParser.RepeatContext ctx);
-  /**
-   * Exit a parse tree produced by {@link ABCMusicParser#repeat}.
-   * @param ctx the parse tree
-   */
-  void exitRepeat(ABCMusicParser.RepeatContext ctx);
-  /**
    * Enter a parse tree produced by {@link ABCMusicParser#voice}.
    * @param ctx the parse tree
    */
@@ -170,4 +180,14 @@ public interface ABCMusicListener extends ParseTreeListener {
    * @param ctx the parse tree
    */
   void exitEol(ABCMusicParser.EolContext ctx);
+  /**
+   * Enter a parse tree produced by {@link ABCMusicParser#text}.
+   * @param ctx the parse tree
+   */
+  void enterText(ABCMusicParser.TextContext ctx);
+  /**
+   * Exit a parse tree produced by {@link ABCMusicParser#text}.
+   * @param ctx the parse tree
+   */
+  void exitText(ABCMusicParser.TextContext ctx);
 }

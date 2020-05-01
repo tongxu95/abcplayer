@@ -18,7 +18,7 @@ public class Rest implements Music {
 	//	 Field is an immutable integer
 	
     /**
-     * Create a rest in music
+     * Create a rest in melody
      * @param duration rest duration (number of ticks)
      */
 	public Rest(int duration) {
@@ -27,14 +27,17 @@ public class Rest implements Music {
 	}
 	
 	private void checkRep() {
-		assert duration > 0;
+		assert duration >= 0;
 	}
 	
-    /**
-     * @return duration of the rest (number of ticks)
-     */
+	@Override
 	public int getDuration() {
 		return duration;
+	}
+	
+	@Override
+	public Rest modLength(double modifier) {
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
@@ -55,12 +58,13 @@ public class Rest implements Music {
 	}
 	
     /**
-     * @return a string representation of this rest in abc music notation. The string 
-     * 	       consists of the rest (denoted "z"), and the rest duration in ticks. 
+     * @return a string representation of the rest, denoted z, and the
+     *  rest duration in ticks (a whole note last for 192 ticks). 
      */
 	@Override
 	public String toString() {
-		return "z" + Integer.toString(duration);
+		if (duration > 0) return "z" + Integer.toString(duration);
+		else return "";
 	}
 	
 }
