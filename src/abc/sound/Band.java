@@ -79,9 +79,9 @@ public class Band implements Music {
      */
 	@Override
 	public String toString() {
-		String band = "";
-		for (String voice : voices.keySet()) band += "[|" + voices.get(voice).toString() + "|]\n";
-		return band;
+		StringBuilder band = new StringBuilder();
+		for (String voice : voices.keySet()) band.append("[|" + voices.get(voice).toString() + "|]\n");
+		return band.toString();
 	}
 	
 }

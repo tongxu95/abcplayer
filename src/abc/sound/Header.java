@@ -189,6 +189,20 @@ public class Header {
 	}
 	
     /**
+     * @return beats per minute    
+     * */
+	public int getBeatsPerMinute() {
+		return tempo_bpm;
+	}
+	
+    /**
+     * @return number of ticks per beat    
+     * */
+	public int getTicksPerBeat() {
+		return tempo_beat;
+	}
+	
+    /**
      * @return voices in this piece    
      * */
 	public List<String> getVoices() {

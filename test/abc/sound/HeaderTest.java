@@ -26,7 +26,8 @@ public class HeaderTest {
     }
     
     // Testing Strategy:
-    // Observer methods: one test for getKeySig(), getDefaultDuration(), getVoices, toString()
+    // Observer methods: one test for getKeySig(), getDefaultDuration(), getBeatsPerMinute()
+    //					 getVoices, toString()
     // equals and hashCode: two header are equal / not equals
     // addVoices(): no voice field in header, voice field in header (duplicate)
     // parseHeader: 
@@ -54,7 +55,17 @@ public class HeaderTest {
     public void TestGetDefaultDuration() {
     	assertEquals("default duration", header.getDefaultDuration(), 24);
     }
+    
+    @Test
+    public void TestGetBeatsPerMinute() {
+    	assertEquals("beats per minute", header.getBeatsPerMinute(), 100);
+    }
 
+    @Test
+    public void TestGetTicksPerBeat() {
+    	assertEquals("number of ticks per beat", header.getTicksPerBeat(), 24);
+    }
+    
     @Test
     public void TestGetVoices() {
     	assertTrue("no voice field in header", header.getVoices().isEmpty());

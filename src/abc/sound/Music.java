@@ -37,7 +37,7 @@ public interface Music {
      */
 	public static Music parseMusic(String input, int defaultDuration, 
 			Map<String, Integer> keySig, List<String> voices) throws IllegalArgumentException {
-//		try {
+		try {
 			CharStream stream = new ANTLRInputStream (input);
 			ABCMusicLexer lexer = new ABCMusicLexer(stream);
 			lexer.reportErrorsAsExceptions();
@@ -51,9 +51,9 @@ public interface Music {
 			MakeMusic walkMusic = new MakeMusic(defaultDuration, keySig, voices);
 			walker.walk(walkMusic, tree);
 			return walkMusic.getMusic();
-//		} catch (Exception e) {
-//			throw new IllegalArgumentException("ParseError: illegal file format");
-//		}
+		} catch (Exception e) {
+			throw new IllegalArgumentException("ParseError: illegal file format");
+		}
 	}
 	
     /**
