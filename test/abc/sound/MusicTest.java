@@ -54,162 +54,161 @@ public class MusicTest {
 	//		key signature applied to same note in all octaves throughout the piece
 	//		key signature cancelled by accidental
 
+    @Test
+    public void testNoteToString() {
+    	assertEquals("string for a note", note.toString(), "^C'24");
+    }
+    
+    @Test
+    public void testRestToString() {
+    	assertEquals("string for a rest", rest.toString(), "z12");
+    }
+    
+    @Test
+    public void testChordToString() {
+    	assertEquals("string for a chord", chord.toString(), "[^C'24^D24]");
+    }
+    
+    @Test
+    public void testTupletToString() {
+    	assertEquals("string for a duplet", tuplet.toString(), "(2^C'24^D24");
+    }
+    
+    @Test
+    public void testMelodyToString() {
+    	assertEquals("string for a melody", melody1.toString(), "^C'24 z12");
+    }
+    
+    @Test
+    public void testBandToString() {
+    	voices1.put("1", melody1);
+    	voices1.put("2", melody2);
+    	Band band = new Band(voices1);
+    	assertEquals("string for two voices", band.toString(), 
+    			"[|^C'24 z12|]\n[|^C'24 z12 ^C'24|]\n");
+    }
 
-//    @Test
-//    public void testNoteToString() {
-//    	assertEquals("string for a note", note.toString(), "^C'24");
-//    }
-//    
-//    @Test
-//    public void testRestToString() {
-//    	assertEquals("string for a rest", rest.toString(), "z12");
-//    }
-//    
-//    @Test
-//    public void testChordToString() {
-//    	assertEquals("string for a chord", chord.toString(), "[^C'24^D24]");
-//    }
-//    
-//    @Test
-//    public void testTupletToString() {
-//    	assertEquals("string for a duplet", tuplet.toString(), "(2^C'24^D24");
-//    }
-//    
-//    @Test
-//    public void testMelodyToString() {
-//    	assertEquals("string for a melody", melody1.toString(), "^C'24 z12");
-//    }
-//    
-//    @Test
-//    public void testBandToString() {
-//    	voices1.put("1", melody1);
-//    	voices1.put("2", melody2);
-//    	Band band = new Band(voices1);
-//    	assertEquals("string for two voices", band.toString(), 
-//    			"[|^C'24 z12|]\n[|^C'24 z12 ^C'24|]\n");
-//    }
-//
-//    @Test
-//    public void testPlayNote() throws MidiUnavailableException, InvalidMidiDataException {
-//    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
-//    	assertEquals("play note", note.play(player, 0), 24);
-//    	assertEquals("note duration", note.getDuration(), 24);
-//    }
-//    
-//    @Test
-//    public void testPlayRest() throws MidiUnavailableException, InvalidMidiDataException {
-//    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
-//    	assertEquals("play rest", rest.play(player, 0), 12);
-//    	assertEquals("rest duration", rest.getDuration(), 12);
-//    }
-//    
-//    @Test
-//    public void testPlayChord() throws MidiUnavailableException, InvalidMidiDataException {
-//    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
-//    	assertEquals("play chord", chord.play(player, 0), 24);
-//    	assertEquals("chord duration", chord.getDuration(), 24);
-//    }
-//    
-//    @Test
-//    public void testPlayTupletofNotes() throws MidiUnavailableException, InvalidMidiDataException {
-//    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
-//    	assertEquals("play tuplet", tuplet.play(player, 0), 72);
-//    	assertEquals("chord duration", tuplet.getDuration(), 72);
-//    }
-//    
-//    @Test
-//    public void testPlayTupletofChordAndNote() throws MidiUnavailableException, InvalidMidiDataException {
-//    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
-//    	assertEquals("play tuplet", tuplet2.play(player, 0), 72);
-//    	assertEquals("chord duration", tuplet2.getDuration(), 72);
-//    }
-//    
-//    @Test
-//    public void testPlayMelody() throws MidiUnavailableException, InvalidMidiDataException {
-//    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
-//    	assertEquals("play melody", melody2.play(player, 0), 60);
-//    	assertEquals("note duration", melody2.getDuration(), 60);
-//    }
-//    
-//    @Test
-//    public void testPlayBand() throws MidiUnavailableException, InvalidMidiDataException {
-//    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
-//    	voices1.put("1", melody1);
-//    	voices1.put("2", melody2);
-//    	Band band = new Band(voices1);
-//    	assertEquals("play melody", band.play(player, 0), 60);
-//    	assertEquals("band duration", band.getDuration(), 60);
-//    }
-//    
-//    @Test
-//    public void testNoteEquality() {
-//    	Note equalNote = new Note (new Pitch('D').transpose(11), 24);
-//    	Note diffNote = new Note (new Pitch('C').transpose(13), 12);
-//    	assertTrue("notes are equal", note.equals(equalNote));
-//    	assertFalse("notes are different", note.equals(diffNote));
-//    	assertEquals("equal notes have same hash code", note.hashCode(), equalNote.hashCode());
-//    	assertTrue("unique notes have unique hash code", note.hashCode() != diffNote.hashCode());
-//    }
-//    
-//    @Test
-//    public void testRestEquality() {
-//    	Rest equalRest = new Rest(12);
-//    	Rest diffRest = new Rest(24);
-//    	assertTrue("rests are equal", rest.equals(equalRest));
-//    	assertFalse("rests are different", rest.equals(diffRest));
-//    	assertEquals("equal rests have same hash code", rest.hashCode(), equalRest.hashCode());
-//    	assertTrue("unique rests have unique hash code", rest.hashCode() != diffRest.hashCode());
-//    }
-//    
-//    @Test
-//    public void testChordEquality() {
-//    	Chord equalChord = new Chord(Arrays.asList(note2, note));
-//    	Chord diffChord = new Chord(Arrays.asList(note, note));
-//    	assertTrue("chords are equal", chord.equals(equalChord));
-//    	assertFalse("chords are different", chord.equals(diffChord));
-//    	assertEquals("equal chords have same hash code", chord.hashCode(), equalChord.hashCode());
-//    	assertTrue("unique chords have unique hash code", chord.hashCode() != diffChord.hashCode());
-//    }
-//
-//    @Test
-//    public void testTupletEquality() {
-//    	Tuplet equalTuplet = new Tuplet(Arrays.asList(note, note2), 2);
-//    	Tuplet diffTuplet = new Tuplet(Arrays.asList(note2, note), 2);
-//    	assertTrue("tuplet are equal", tuplet.equals(equalTuplet));
-//    	assertFalse("tuplet are different", tuplet.equals(diffTuplet));
-//    	assertEquals("equal tuplets have same hash code", tuplet.hashCode(), equalTuplet.hashCode());
-//    	assertTrue("unique tuplets have unique hash code", tuplet.hashCode() != diffTuplet.hashCode());
-//    }
-//    
-//    @Test
-//    public void testMelodyEquality() {
-//    	Melody equalMelody = new Melody(note, rest);
-//    	Melody diffMelody = new Melody(rest, note);
-//    	assertTrue("melodies are equal", melody1.equals(equalMelody));
-//    	assertFalse("melodies are different", melody1.equals(diffMelody));
-//    	assertEquals("equal melodies have same hash code", melody1.hashCode(), equalMelody.hashCode());
-//    	assertTrue("unique melodies have unique hash code", melody1.hashCode() != diffMelody.hashCode());
-//    }
-//
-//	@Test
-//	public void testBandEquality() {
-//    	voices1.put("1", melody1);
-//    	voices1.put("2", melody2);
-//    	Map <String, Music> samevoices = new HashMap<>();
-//    	samevoices.put("1", melody1);
-//    	samevoices.put("2", melody2);
-//    	Map <String, Music> diffvoices = new HashMap<>();
-//    	diffvoices.put("1", melody2);
-//    	diffvoices.put("2", melody1);
-//    	Band band = new Band(voices1);
-//		Band equalBand = new Band(samevoices);
-//	  	Band diffBand = new Band(diffvoices);
-//	  	assertTrue("bands are equal", band.equals(equalBand));
-//	  	assertFalse("bands are different", band.equals(diffBand));
-//	  	assertEquals("equal bands have same hash code", band.hashCode(), equalBand.hashCode());
-//	  	assertTrue("unique bands have unique hash code", band.hashCode() != diffBand.hashCode());
-//	}
-//    
+    @Test
+    public void testPlayNote() throws MidiUnavailableException, InvalidMidiDataException {
+    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
+    	assertEquals("play note", note.play(player, 0), 24);
+    	assertEquals("note duration", note.getDuration(), 24);
+    }
+    
+    @Test
+    public void testPlayRest() throws MidiUnavailableException, InvalidMidiDataException {
+    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
+    	assertEquals("play rest", rest.play(player, 0), 12);
+    	assertEquals("rest duration", rest.getDuration(), 12);
+    }
+    
+    @Test
+    public void testPlayChord() throws MidiUnavailableException, InvalidMidiDataException {
+    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
+    	assertEquals("play chord", chord.play(player, 0), 24);
+    	assertEquals("chord duration", chord.getDuration(), 24);
+    }
+    
+    @Test
+    public void testPlayTupletofNotes() throws MidiUnavailableException, InvalidMidiDataException {
+    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
+    	assertEquals("play tuplet", tuplet.play(player, 0), 72);
+    	assertEquals("chord duration", tuplet.getDuration(), 72);
+    }
+    
+    @Test
+    public void testPlayTupletofChordAndNote() throws MidiUnavailableException, InvalidMidiDataException {
+    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
+    	assertEquals("play tuplet", tuplet2.play(player, 0), 72);
+    	assertEquals("chord duration", tuplet2.getDuration(), 72);
+    }
+    
+    @Test
+    public void testPlayMelody() throws MidiUnavailableException, InvalidMidiDataException {
+    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
+    	assertEquals("play melody", melody2.play(player, 0), 60);
+    	assertEquals("note duration", melody2.getDuration(), 60);
+    }
+    
+    @Test
+    public void testPlayBand() throws MidiUnavailableException, InvalidMidiDataException {
+    	SequencePlayer player = new SequencePlayer(Music.DEFAULT_TEMPO, Music.TICKS_WHOLE_NOTE);
+    	voices1.put("1", melody1);
+    	voices1.put("2", melody2);
+    	Band band = new Band(voices1);
+    	assertEquals("play melody", band.play(player, 0), 60);
+    	assertEquals("band duration", band.getDuration(), 60);
+    }
+    
+    @Test
+    public void testNoteEquality() {
+    	Note equalNote = new Note (new Pitch('D').transpose(11), 24);
+    	Note diffNote = new Note (new Pitch('C').transpose(13), 12);
+    	assertTrue("notes are equal", note.equals(equalNote));
+    	assertFalse("notes are different", note.equals(diffNote));
+    	assertEquals("equal notes have same hash code", note.hashCode(), equalNote.hashCode());
+    	assertTrue("unique notes have unique hash code", note.hashCode() != diffNote.hashCode());
+    }
+    
+    @Test
+    public void testRestEquality() {
+    	Rest equalRest = new Rest(12);
+    	Rest diffRest = new Rest(24);
+    	assertTrue("rests are equal", rest.equals(equalRest));
+    	assertFalse("rests are different", rest.equals(diffRest));
+    	assertEquals("equal rests have same hash code", rest.hashCode(), equalRest.hashCode());
+    	assertTrue("unique rests have unique hash code", rest.hashCode() != diffRest.hashCode());
+    }
+    
+    @Test
+    public void testChordEquality() {
+    	Chord equalChord = new Chord(Arrays.asList(note2, note));
+    	Chord diffChord = new Chord(Arrays.asList(note, note));
+    	assertTrue("chords are equal", chord.equals(equalChord));
+    	assertFalse("chords are different", chord.equals(diffChord));
+    	assertEquals("equal chords have same hash code", chord.hashCode(), equalChord.hashCode());
+    	assertTrue("unique chords have unique hash code", chord.hashCode() != diffChord.hashCode());
+    }
+
+    @Test
+    public void testTupletEquality() {
+    	Tuplet equalTuplet = new Tuplet(Arrays.asList(note, note2), 2);
+    	Tuplet diffTuplet = new Tuplet(Arrays.asList(note2, note), 2);
+    	assertTrue("tuplet are equal", tuplet.equals(equalTuplet));
+    	assertFalse("tuplet are different", tuplet.equals(diffTuplet));
+    	assertEquals("equal tuplets have same hash code", tuplet.hashCode(), equalTuplet.hashCode());
+    	assertTrue("unique tuplets have unique hash code", tuplet.hashCode() != diffTuplet.hashCode());
+    }
+    
+    @Test
+    public void testMelodyEquality() {
+    	Melody equalMelody = new Melody(note, rest);
+    	Melody diffMelody = new Melody(rest, note);
+    	assertTrue("melodies are equal", melody1.equals(equalMelody));
+    	assertFalse("melodies are different", melody1.equals(diffMelody));
+    	assertEquals("equal melodies have same hash code", melody1.hashCode(), equalMelody.hashCode());
+    	assertTrue("unique melodies have unique hash code", melody1.hashCode() != diffMelody.hashCode());
+    }
+
+	@Test
+	public void testBandEquality() {
+    	voices1.put("1", melody1);
+    	voices1.put("2", melody2);
+    	Map <String, Music> samevoices = new HashMap<>();
+    	samevoices.put("1", melody1);
+    	samevoices.put("2", melody2);
+    	Map <String, Music> diffvoices = new HashMap<>();
+    	diffvoices.put("1", melody2);
+    	diffvoices.put("2", melody1);
+    	Band band = new Band(voices1);
+		Band equalBand = new Band(samevoices);
+	  	Band diffBand = new Band(diffvoices);
+	  	assertTrue("bands are equal", band.equals(equalBand));
+	  	assertFalse("bands are different", band.equals(diffBand));
+	  	assertEquals("equal bands have same hash code", band.hashCode(), equalBand.hashCode());
+	  	assertTrue("unique bands have unique hash code", band.hashCode() != diffBand.hashCode());
+	}
+    
 	 @Test 
 	public void TestParseNoteWithAccidentalInLowOctave() {
 		Map <String, Integer> key = new HashMap<>();
